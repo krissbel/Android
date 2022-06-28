@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">NMedia</string>
     <string name="nmedia">НМедиа</string>
+    <string name="avatar_description">Аватар автораr</string>
 </resources>
