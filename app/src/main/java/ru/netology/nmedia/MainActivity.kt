@@ -2,8 +2,10 @@ package ru.netology.nmedia
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.annotation.DrawableRes
+import androidx.activity.viewModels
+import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
+import ru.netology.nmedia.databinding.PostListItemBinding
 
 
 class MainActivity : AppCompatActivity() {
@@ -14,47 +16,31 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel = PostViewModel()
-        viewModel.data.observe(this) { post ->
-            with(binding) {
-                authorName.text = post.author
-                date.text = post.published
-                textPost.text = post.content
-                countLike.text = countInText(post.likes)
-                countShare.text = countInText(post.countShare)
-                like.setImageResource(
-                    if (post.likedByMe) R.drawable.ic_red_like_24dp else R.drawable.ic_like_24dp
-                )
-            }
-        }
-        binding.like.setOnClickListener {
-            viewModel.like()
-        }
 
-        binding.share.setOnClickListener {
-            viewModel.share()
-        }
-    }
+        val viewModel: PostViewModel by viewModels()
 
-    private fun convertCount(count: Int): Int {
-        return count / 1000
-    }
+        val adapter = PostsAdapter(
+            onLikeClicked = { post ->
+                viewModel.onLikeClicked(post)
+            }, onShareClicked = { post ->
+                viewModel.onShareClicked(post)
+            })
 
-    fun countInText(count: Int): String {
-        if (count < 999) return count.toString()
+        binding.postsRecyclerView.adapter = adapter
 
-        if ((count < 10000) && (count > 999)) when {
-            (count / 100) % 10 == 0 -> return convertCount(count).toString() + "K"
-            (count / 100) % 10 in 1..9 -> return convertCount(count).toString() + "." + (count / 100) % 10 + "K"
+        viewModel.data.observe(this) { posts ->
+            adapter.posts = posts
+
         }
-        if ((count > 9999) && (count < 99999)) when {
-            (count / 100) % 10 in 0..9 -> return convertCount(count).toString() + "K"
-        }
-        if (count > 99999) when {
-            (count / 100) % 100 in 0..9 -> return convertCount(count).toString() + "M"
-        }
-        return count.toString()
     }
 
 }
+
+
+
+
+
+
+
+
 

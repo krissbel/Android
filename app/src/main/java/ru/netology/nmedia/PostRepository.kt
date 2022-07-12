@@ -3,7 +3,7 @@ package ru.netology.nmedia
 import androidx.lifecycle.LiveData
 
 interface PostRepository {
-    fun get(): LiveData<Post>
-    fun like()
-    fun share()
+    val  data: LiveData<List<Post>>
+    fun like(postId: Int)
+    fun share(postId: Int)
 }
