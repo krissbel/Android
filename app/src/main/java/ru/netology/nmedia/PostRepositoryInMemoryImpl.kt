@@ -17,7 +17,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
                 id = index + 1,
                 author = "Автор",
                 published = "23.06.2022",
-                content = "Контент поста № ${index+1}",
+                content = "Контент поста № ${index + 1}",
                 likedByMe = false
 
             )
@@ -28,15 +28,18 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun like(postId: Int) {
         posts = posts.map { post ->
             var newCount = post.likes
-            post.likes = if (!post.likedByMe) newCount + 1 else newCount - 1
-            if (post.id == postId) post.copy(likedByMe = !post.likedByMe, likes = post.likes) else post
+            post.likes = if (!post.likedByMe) newCount++ else newCount--
+            if (post.id != postId) post else post.copy(
+                likedByMe = !post.likedByMe,
+                likes = newCount
+            )
         }
 
     }
 
     override fun share(postId: Int) {
-        posts = posts.map{post ->
-            post.copy(countShare = post.countShare + 1)
+        posts = posts.map { post ->
+            if (post.id != postId) post else post.copy(countShare = post.countShare + 1)
         }
 
     }
