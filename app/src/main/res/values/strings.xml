@@ -3,4 +3,7 @@
     <string name="nmedia">NMedia</string>
     <string name="avatar_description">Author avatar</string>
     <string name="countLikes" translatable="false">0</string>
+    <string name="remove">remove</string>
+    <string name="post_text">post_text</string>
+    <string name="edit">edit</string>
 </resources>

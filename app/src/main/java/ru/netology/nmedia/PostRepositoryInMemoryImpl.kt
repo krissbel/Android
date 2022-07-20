@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 class PostRepositoryInMemoryImpl : PostRepository {
+    private var nextId = 1001
+
     private var posts
         get() = checkNotNull(data.value)
         set(value) {
@@ -12,7 +14,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override val data: MutableLiveData<List<Post>>
 
     init {
-        val initialPosts = List(1000) { index ->
+        val initialPosts = List(GENERATED_POSTS_AMOUNT) { index ->
             Post(
                 id = index + 1,
                 author = "Автор",
@@ -42,6 +44,34 @@ class PostRepositoryInMemoryImpl : PostRepository {
             if (post.id != postId) post else post.copy(countShare = post.countShare + 1)
         }
 
+    }
+
+    override fun delete(postId: Int) {
+        posts = posts.filter { it.id != postId }
+    }
+
+    override fun save(post: Post) {
+        if(post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
+    }
+
+    override fun cancelEdit(post: Post) {
+        if(post.id == PostRepository.NEW_POST_ID) return
+    }
+
+    private fun update(post: Post) {
+        data.value = posts.map {
+            if(it.id == post.id) post else it
+        }
+
+    }
+
+    private fun insert(post: Post) {
+
+        data.value = listOf(post.copy(id = nextId++)) + post
+
+    }
+    private companion object{
+        const val GENERATED_POSTS_AMOUNT = 1000
     }
 
 }

@@ -3,4 +3,7 @@
     <string name="app_name">NMedia</string>
     <string name="nmedia">НМедиа</string>
     <string name="avatar_description">Аватар автораr</string>
+    <string name="remove">Удалить</string>
+    <string name="post_text">post_text</string>
+    <string name="edit">Редактировать</string>
 </resources>
