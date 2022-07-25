@@ -76,12 +76,14 @@ class PostsAdapter(
                 authorName.text = post.author
                 date.text = post.published
                 textPost.text = post.content
-                countLike.text = countInText(post.likes)
-                countShare.text = countInText(post.countShare)
+                like.text = countInText(post.likes)
+                like.isChecked = post.likedByMe
+                share.text = countInText(post.countShare)
                 options.setOnClickListener{popupMenu.show()}
-                like.setImageResource(
-                    if (post.likedByMe) R.drawable.ic_red_like_24dp else R.drawable.ic_like_24dp
-                )
+              //  like.setButtonDrawable(
+              //      if (post.likedByMe) R.drawable.ic_red_like_24dp else R.drawable.ic_like_24dp
+
+                //)
 
 
             }
