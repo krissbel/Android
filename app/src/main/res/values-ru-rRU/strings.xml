@@ -6,4 +6,7 @@
     <string name="remove">Удалить</string>
     <string name="post_text">post_text</string>
     <string name="edit">Редактировать</string>
+    <string name="chooser_share_post">Поделиться</string>
+    <string name="description_post_save">Сохранить</string>
+    <string name="add_post">Добавить пост</string>
 </resources>

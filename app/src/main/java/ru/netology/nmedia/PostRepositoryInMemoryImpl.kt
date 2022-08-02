@@ -22,6 +22,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
                 content = "Контент поста № ${index + 1}",
                 likedByMe = false
 
+
             )
         }
         data = MutableLiveData(initialPosts)

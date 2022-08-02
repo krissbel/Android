@@ -6,10 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.netology.nmedia.PostRepository.Companion.NEW_POST_ID
 import ru.netology.nmedia.adapter.PostInteractionListener
+import ru.netology.nmedia.util.SingleLiveEvent
 
 class PostViewModel : ViewModel(), PostInteractionListener {
     private val repository: PostRepository = PostRepositoryInMemoryImpl()
     val data get() = repository.data
+
+    val sharePostContent = SingleLiveEvent<String>()
+    val navigateToPostContentScreenEvent = SingleLiveEvent<String>()
+
+    /** Значение = url содержит видео для воспроизведения */
+
+    val playVideo = SingleLiveEvent<String>()
+
+    val editPost = SingleLiveEvent<String>()
 
     val currentPost = MutableLiveData<Post?>(null)
 
@@ -26,19 +36,36 @@ class PostViewModel : ViewModel(), PostInteractionListener {
 
     }
 
+    fun onAddClicked() {
+        navigateToPostContentScreenEvent.call()
+    }
+
     override fun onLikeClicked(post: Post) = repository.like(post.id)
 
-    override fun onShareClicked(post: Post) = repository.share(post.id)
+    override fun onShareClicked(post: Post){
+        sharePostContent.value = post.content
+
+    }
 
     override fun onRemoveClicked(post: Post) = repository.delete(post.id)
+
     override fun onEditClicked(post: Post) {
         currentPost.value = post
+        navigateToPostContentScreenEvent.call()
+
     }
 
     override fun onCancelEditClicked() {
         currentPost.value = null
 
-
-
     }
+
+    override fun onPlayVideoClicked(post: Post) {
+        val url = requireNotNull(post.video){
+
+        }
+        playVideo.value = url
+    }
+
+
 }

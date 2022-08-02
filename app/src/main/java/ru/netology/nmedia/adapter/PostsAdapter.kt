@@ -3,6 +3,7 @@ package ru.netology.nmedia.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,8 +13,6 @@ import ru.netology.nmedia.databinding.PostListItemBinding
 
 class PostsAdapter(
     private val interactionListener: PostInteractionListener
-    //private val onLikeClicked: (Post) -> Unit,
-   /// private val onShareClicked: (Post) -> Unit
 ) :
     ListAdapter<Post, PostsAdapter.ViewHolder>(DiffCallback) {
 
@@ -33,8 +32,7 @@ class PostsAdapter(
     class ViewHolder(
         private val binding: PostListItemBinding,
         listener: PostInteractionListener
-      //  private val onLikeClicked: (Post) -> Unit,
-      //  private val onShareClicked: (Post) -> Unit
+
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private lateinit var post: Post
@@ -67,6 +65,10 @@ class PostsAdapter(
                 listener.onShareClicked(post)
             }
 
+            binding.video.setOnClickListener{
+                listener.onPlayVideoClicked(post)
+            }
+
         }
 
         fun bind(post: Post) {
@@ -80,11 +82,7 @@ class PostsAdapter(
                 like.isChecked = post.likedByMe
                 share.text = countInText(post.countShare)
                 options.setOnClickListener{popupMenu.show()}
-              //  like.setButtonDrawable(
-              //      if (post.likedByMe) R.drawable.ic_red_like_24dp else R.drawable.ic_like_24dp
-
-                //)
-
+                videoGroup.isVisible = post.video != null
 
             }
         }
