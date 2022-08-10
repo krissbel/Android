@@ -10,18 +10,18 @@ import ru.netology.nmedia.PostRepository.Companion.NEW_POST_ID
 import ru.netology.nmedia.adapter.PostInteractionListener
 import ru.netology.nmedia.util.SingleLiveEvent
 
-class PostViewModel(application: Application) : AndroidViewModel(application), PostInteractionListener {
+class PostViewModel(application: Application) : AndroidViewModel(application),
+    PostInteractionListener {
     private val repository: PostRepository = FilePostRepository(application)
     val data get() = repository.data
 
     val sharePostContent = SingleLiveEvent<String>()
     val navigateToPostContentScreenEvent = SingleLiveEvent<String>()
+    private val navigateToPostContentDetails = SingleLiveEvent<Int>()
 
     /** Значение = url содержит видео для воспроизведения */
 
     val playVideo = SingleLiveEvent<String>()
-
-    val editPost = SingleLiveEvent<String>()
 
     val currentPost = MutableLiveData<Post?>(null)
 
@@ -32,7 +32,13 @@ class PostViewModel(application: Application) : AndroidViewModel(application), P
 
         val post = currentPost.value?.copy(
             content = content
-        ) ?: Post(id = NEW_POST_ID, author = "Kriss", content = content, published = "Today")
+        ) ?: Post(
+            id = NEW_POST_ID,
+            author = "Kriss",
+            content = content,
+            published = "Today",
+            video = "https://www.youtube.com/watch?v=b11RKHyOFCs"
+        )
         repository.save(post)
         currentPost.value = null
 
@@ -44,7 +50,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application), P
 
     override fun onLikeClicked(post: Post) = repository.like(post.id)
 
-    override fun onShareClicked(post: Post){
+    override fun onShareClicked(post: Post) {
+        repository.share(post.id)
         sharePostContent.value = post.content
 
     }
@@ -53,21 +60,20 @@ class PostViewModel(application: Application) : AndroidViewModel(application), P
 
     override fun onEditClicked(post: Post) {
         currentPost.value = post
-        navigateToPostContentScreenEvent.call()
-
-    }
-
-    override fun onCancelEditClicked() {
-        currentPost.value = null
+        navigateToPostContentScreenEvent.value = post.content
 
     }
 
     override fun onPlayVideoClicked(post: Post) {
-        val url = requireNotNull(post.video){
+        val url = requireNotNull(post.video) {
 
         }
         playVideo.value = url
     }
 
+    override fun openPost(post: Post) {
+        currentPost.value = post
+        navigateToPostContentDetails.value = post.id
+    }
 
 }

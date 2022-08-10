@@ -66,9 +66,6 @@ class SharedPrefsPostRepository(application: Application) : PostRepository {
         if (post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
     }
 
-    override fun cancelEdit(post: Post) {
-        if (post.id == PostRepository.NEW_POST_ID) return
-    }
 
     private fun update(post: Post) {
         posts = posts.map {

@@ -75,9 +75,6 @@ class FilePostRepository(private val application: Application) : PostRepository 
         if (post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
     }
 
-    override fun cancelEdit(post: Post) {
-        if (post.id == PostRepository.NEW_POST_ID) return
-    }
 
     private fun update(post: Post) {
         posts = posts.map {
@@ -88,7 +85,7 @@ class FilePostRepository(private val application: Application) : PostRepository 
 
     private fun insert(post: Post) {
 
-        posts = listOf(post.copy(id = nextId++)) + post
+        posts = listOf(post.copy(id = nextId++)) + posts
 
     }
 

@@ -16,20 +16,8 @@ class PostsAdapter(
 ) :
     ListAdapter<Post, PostsAdapter.ViewHolder>(DiffCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = PostListItemBinding.inflate(
-            inflater, parent, false
-        )
-        return ViewHolder(binding, interactionListener)
-    }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val post = getItem(position)
-        holder.bind(post)
-    }
-
-    class ViewHolder(
+   inner class ViewHolder(
         private val binding: PostListItemBinding,
         listener: PostInteractionListener
 
@@ -67,6 +55,9 @@ class PostsAdapter(
 
             binding.video.setOnClickListener{
                 listener.onPlayVideoClicked(post)
+            }
+            binding.root.setOnClickListener{
+                listener.openPost(post)
             }
 
         }
@@ -115,5 +106,18 @@ class PostsAdapter(
 
         override fun areContentsTheSame(oldItem: Post, newItem: Post) =
             oldItem == newItem
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = PostListItemBinding.inflate(
+            inflater, parent, false
+        )
+        return ViewHolder(binding, interactionListener)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val post = getItem(position)
+        holder.bind(post)
     }
 }

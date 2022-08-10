@@ -55,9 +55,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
         if(post.id == PostRepository.NEW_POST_ID) insert(post) else update(post)
     }
 
-    override fun cancelEdit(post: Post) {
-        if(post.id == PostRepository.NEW_POST_ID) return
-    }
+
 
     private fun update(post: Post) {
         data.value = posts.map {
@@ -68,7 +66,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
 
     private fun insert(post: Post) {
 
-        data.value = listOf(post.copy(id = nextId++)) + post
+        data.value = listOf(post.copy(id = nextId++)) + posts
 
     }
     private companion object{
