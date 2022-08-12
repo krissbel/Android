@@ -42,7 +42,7 @@ class FeedFragment : Fragment() {
             requestKey = PostContentFragment.REQUEST_KEY
         ) { requestKey, bundle ->
             if (requestKey != PostContentFragment.REQUEST_KEY) return@setFragmentResultListener
-            val newPostContent = bundle.getString(PostContentFragment.REQUEST_KEY)
+            val newPostContent = bundle.getString(PostContentFragment.RESULT_KEY)
                 ?: return@setFragmentResultListener
             viewModel.onSaveClicked(newPostContent)
 
@@ -59,6 +59,11 @@ class FeedFragment : Fragment() {
             findNavController().navigate(direction)
         }
 
+        viewModel.navigateToPostContentDetails.observe(this) { postId ->
+            val direction = FeedFragmentDirections.toPostContentDetailsFragment(postId.toString())
+            findNavController().navigate(direction)
+        }
+
 
     }
 
@@ -66,7 +71,7 @@ class FeedFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) = FragmentFeedBinding.inflate(layoutInflater,container,false).also { binding ->
+    ) = FragmentFeedBinding.inflate(layoutInflater, container, false).also { binding ->
 
 
         val adapter = PostsAdapter(viewModel)
@@ -82,7 +87,7 @@ class FeedFragment : Fragment() {
         }
     }.root
 
-    }
+}
 
 
 

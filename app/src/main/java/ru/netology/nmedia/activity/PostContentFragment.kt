@@ -34,8 +34,8 @@ class PostContentFragment : Fragment() {
         val text = binding.edit.text.toString()
         if (!text.isNullOrBlank()) {
             val resultBundle = Bundle(1)
-            resultBundle.putString(RESULT_KEY, text.toString())
-            setFragmentResult(RESULT_KEY, resultBundle)
+            resultBundle.putString(RESULT_KEY, text)
+            setFragmentResult(REQUEST_KEY, resultBundle)
         }
 
         findNavController().navigateUp()

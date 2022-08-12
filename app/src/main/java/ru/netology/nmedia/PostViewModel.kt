@@ -17,7 +17,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application),
 
     val sharePostContent = SingleLiveEvent<String>()
     val navigateToPostContentScreenEvent = SingleLiveEvent<String>()
-    private val navigateToPostContentDetails = SingleLiveEvent<Int>()
+    val navigateToPostContentDetails = SingleLiveEvent<Int>()
 
     /** Значение = url содержит видео для воспроизведения */
 

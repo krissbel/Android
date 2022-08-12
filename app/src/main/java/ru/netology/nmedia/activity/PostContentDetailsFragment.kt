@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import ru.netology.nmedia.Post
 import ru.netology.nmedia.PostViewModel
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.FragmentPostContentDetailsBinding
@@ -56,17 +57,8 @@ class PostContentDetailsFragment : Fragment() {
             viewModel.data.observe(viewLifecycleOwner) { posts ->
                 val changedPosts = posts.filter { it.id == post?.id }
                 if (changedPosts.isNotEmpty()) {
+                    binding.render(changedPosts.first())
 
-                    with(binding) {
-                        authorName.text = post?.author
-                        date.text = post?.published
-                        textPost.text = post?.content
-                        like.text = countInText(post?.likes)
-                        like.isChecked = post?.likedByMe == true
-                        share.text = countInText(post?.countShare)
-                        options.setOnClickListener { popupMenu.show() }
-                        videoGroup.isVisible = post?.video != null
-                    }
                 } else {
                     findNavController().navigateUp()
                 }
@@ -76,7 +68,7 @@ class PostContentDetailsFragment : Fragment() {
                 requestKey = PostContentFragment.REQUEST_KEY
             ) { requestKey, bundle ->
                 if (requestKey != PostContentFragment.REQUEST_KEY) return@setFragmentResultListener
-                val newPostContent = bundle.getString(PostContentFragment.REQUEST_KEY)
+                val newPostContent = bundle.getString(PostContentFragment.RESULT_KEY)
                     ?: return@setFragmentResultListener
                 viewModel.onSaveClicked(newPostContent)
             }
@@ -112,13 +104,14 @@ class PostContentDetailsFragment : Fragment() {
                 binding.video.setOnClickListener {
                     viewModel.onPlayVideoClicked(post)
                 }
+                binding.options.setOnClickListener{popupMenu.show()}
             }
 
 
 
             viewModel.navigateToPostContentScreenEvent.observe(viewLifecycleOwner) { initialContent ->
                 val direction =
-                    PostContentDetailsFragmentDirections.actionPostContentDetailsFragmentToPostContentFragment(
+                    PostContentDetailsFragmentDirections.toPostContentFragment(
                         initialContent
                     )
                 findNavController().navigate(direction)
@@ -156,6 +149,19 @@ class PostContentDetailsFragment : Fragment() {
             }
         }
         return count.toString()
+    }
+
+    private fun FragmentPostContentDetailsBinding.render(post:Post){
+        post.let{
+            authorName.text = post?.author
+                        date.text = post?.published
+                        textPost.text = post?.content
+                        like.text = countInText(post?.likes)
+                        like.isChecked = post?.likedByMe == true
+                        share.text = countInText(post?.countShare)
+                        videoGroup.isVisible = post?.video != null
+
+        }
     }
 }
 
