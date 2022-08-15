@@ -1,7 +1,8 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.data.impl
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import ru.netology.nmedia.Post
+import ru.netology.nmedia.data.PostRepository
 
 class PostRepositoryInMemoryImpl : PostRepository {
     private var nextId = 1001

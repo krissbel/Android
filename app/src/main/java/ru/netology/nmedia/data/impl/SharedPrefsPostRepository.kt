@@ -1,21 +1,17 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.data.impl
 
 import android.app.Application
 import android.content.Context
 import androidx.core.content.edit
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import ru.netology.nmedia.Post
+import ru.netology.nmedia.data.PostRepository
 import kotlin.properties.Delegates
 
-class FilePostRepository(private val application: Application) : PostRepository {
-    private val  gson = Gson()
-    private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
-
+class SharedPrefsPostRepository(application: Application) : PostRepository {
     private val prefs = application.getSharedPreferences(
         "repo", Context.MODE_PRIVATE
     )
@@ -30,9 +26,9 @@ class FilePostRepository(private val application: Application) : PostRepository 
     private var posts
         get() = checkNotNull(data.value)
         set(value) {
-            application.openFileOutput(FILE_NAME, Context.MODE_PRIVATE
-            ).bufferedWriter().use {
-                it.write(gson.toJson(value))
+            prefs.edit {
+                val serializedPosts = Json.encodeToString(value)
+                putString(POSTS_PREFS_KEY, serializedPosts)
             }
             data.value = value
         }
@@ -40,14 +36,10 @@ class FilePostRepository(private val application: Application) : PostRepository 
 
 
     init {
-        val postsFile = application.filesDir.resolve(FILE_NAME)
-        val posts:List<Post> = if(postsFile.exists()) {
-            val inputStream = application.openFileInput(FILE_NAME)
-            val reader = inputStream.bufferedReader()
-            reader.use { gson.fromJson(it, type) }
+        val serializedPosts = prefs.getString(POSTS_PREFS_KEY, null)
+        val posts: List<Post> = if (serializedPosts != null) {
+            Json.decodeFromString(serializedPosts)
         } else emptyList()
-
-
         data = MutableLiveData(posts)
     }
 
@@ -85,14 +77,13 @@ class FilePostRepository(private val application: Application) : PostRepository 
 
     private fun insert(post: Post) {
 
-        posts = listOf(post.copy(id = nextId++)) + posts
+        posts = listOf(post.copy(id = nextId++)) + post
 
     }
 
     private companion object {
         const val POSTS_PREFS_KEY = "posts"
         const val NEXT_ID_PREFS_KEY = "posts"
-        const val FILE_NAME = "posts.json"
     }
 
 }
